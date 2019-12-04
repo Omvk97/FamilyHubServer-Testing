@@ -19,9 +19,13 @@
     <Folder Include="Data\Repositories\" />
     <Folder Include="DTO\OutputDTOs\" />
     <Folder Include="DTO\InputDTOs\" />
-    <Folder Include="Data\Repositories\Auth\" />
+    <Folder Include="Data\Repositories\Identity\" />
     <Folder Include="Helpers\Hashing\" />
     <Folder Include="Helpers\Jwt\" />
+    <Folder Include="Options\" />
+    <Folder Include="Contracts\" />
+    <Folder Include="Controllers\V1\" />
+    <Folder Include="Contracts\V1\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.1" />
@@ -32,5 +36,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
   </ItemGroup>
 </Project>

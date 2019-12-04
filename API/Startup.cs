@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using API.Data;
 using API.Data.Repositories;
 using API.DTO;
@@ -17,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace API
 {
@@ -37,7 +34,7 @@ namespace API
             services.AddDbContextPool<DataContext>(options => options.UseNpgsql(_configuration["DEV_DATABASE_CONNECTION_STRING"]));
 
             // Repository dependency injection
-            services.AddScoped<IAuthRepo, AuthRepo>();
+            services.AddScoped<IIdentityRepo, IdentityRepo>();
 
             // Helper injection
             services.AddSingleton<IHashing, Hashing>();
@@ -76,6 +73,22 @@ namespace API
             });
 
             services.AddCors();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "FamilyHub API",
+                    Description = "REST API for Family Hub at VK-Media",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Oliver Marco van Komen",
+                        Email = string.Empty,
+                        Url = new System.Uri("https://github.com/omvk97")
+                    }
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,10 +98,23 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FamilyHub API v1");
+            });
+
             app.UseRouting();
+
+            app.UseHttpsRedirection();
 
             app.UseAuthentication();
 

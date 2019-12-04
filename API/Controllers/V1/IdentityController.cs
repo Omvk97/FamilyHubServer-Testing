@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
+using API.Contracts.V1;
 using API.Data.Repositories;
 using API.DTO.InputDTOs;
+using API.DTO.OutputDTOs;
 using API.Helpers.Jwt;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
+namespace API.Controllers.V1
 {
     [ApiController]
-    [Route("[controller]")]
-    public class AuthController : ControllerBase
+    [Route(ApiRoutes.Identity.ControllerRoute)]
+    public class IdentityController : ControllerBase
     {
-        private readonly IAuthRepo _repo;
+        private readonly IIdentityRepo _repo;
         private readonly IJwt _jwtHelper;
 
-        public AuthController(IAuthRepo repo, IJwt jwt)
+        public IdentityController(IIdentityRepo repo, IJwt jwt)
         {
             _repo = repo;
             _jwtHelper = jwt;
         }
 
-        [HttpPost]
+        [HttpPost(ApiRoutes.Identity.Login)]
         public async Task<ActionResult> Login(LoginDTO userInput)
         {
             try
@@ -30,11 +32,11 @@ namespace API.Controllers
 
                 var jwt = _jwtHelper.CreateJwt(userCredential);
 
-                return Ok(new { jwt });
+                return Ok(new SucessLoginDTO { Jwt = jwt});
             } 
             catch (NullReferenceException)
             {
-                return Unauthorized(new { error = "Invalid login" });
+                return Unauthorized(new UserInputErrorDTO { ErrorMessage = "Invalid login" });
             }
             catch (FormatException fex)
             {

@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{3
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{44031FA4-1643-4B19-BEBE-28513A01B51A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.IntegrationTests", "API.IntegrationTests\API.IntegrationTests.csproj", "{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{44031FA4-1643-4B19-BEBE-28513A01B51A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44031FA4-1643-4B19-BEBE-28513A01B51A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44031FA4-1643-4B19-BEBE-28513A01B51A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

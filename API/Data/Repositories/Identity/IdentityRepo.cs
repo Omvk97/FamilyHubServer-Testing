@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data.Repositories
 {
-    public class AuthRepo : IAuthRepo
+    public class IdentityRepo : IIdentityRepo
     {
         private readonly DataContext _context;
         private readonly IHashing _hashing;
 
-        public AuthRepo(DataContext context, IHashing hashing)
+        public IdentityRepo(DataContext context, IHashing hashing)
         {
             _context = context;
             _hashing = hashing;

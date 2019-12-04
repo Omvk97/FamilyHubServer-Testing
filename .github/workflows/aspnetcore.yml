@@ -15,4 +15,4 @@ jobs:
       - name: Build with dotnet
         run: dotnet build API
       - name: Run tests
-        run: dotnet test --configuration Release
+        run: dotnet test API.IntegrationTests
