@@ -19,7 +19,6 @@ namespace API.IntegrationTests
         [Fact]
         public async void Test1()
         {
-            var response = await _client.GetAsync(ApiRoutes)
         }
     }
 }
