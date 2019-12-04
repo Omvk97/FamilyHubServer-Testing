@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+    dev_database:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_USER: dev-admin-user
+            POSTGRES_PASSWORD: dev-admin-password
+            POSTGRES_DB: dev-family-hub-server
+        ports:
+            - '5432:5432'
+    test_database:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_USER: test-admin-user
+            POSTGRES_PASSWORD: test-admin-password
+            POSTGRES_DB: test-family-hub-server
+        ports:
+            - '5433:5432'
