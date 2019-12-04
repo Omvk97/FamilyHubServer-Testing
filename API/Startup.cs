@@ -1,6 +1,6 @@
 using System.Text;
 using API.Data;
-using API.Data.Repositories;
+using API.Data.Repositories.V1;
 using API.DTO;
 using API.Helpers.Hashing;
 using API.Helpers.Jwt;
@@ -31,8 +31,8 @@ namespace API
         {
             services.AddControllers();
 
-            services.AddDbContextPool<DataContext>(options => options.UseNpgsql(_configuration["DEV_DATABASE_CONNECTION_STRING"]));
-
+            services.AddDbContext<DataContext>(options => options.UseNpgsql(_configuration["DEV_DATABASE_CONNECTION_STRING"]));
+            
             // Repository dependency injection
             services.AddScoped<IIdentityRepo, IdentityRepo>();
 
@@ -50,21 +50,19 @@ namespace API
             services.AddSingleton(mapper);
 
             // Authorization - JWT
-            var jwtKey = Encoding.ASCII.GetBytes(_configuration["JWT_SECRET"]);
-            services.AddAuthentication(x =>
+            var jwtKey = Encoding.ASCII.GetBytes(_configuration["JWT:KEY"]);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.TokenValidationParameters = new TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(jwtKey),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidIssuer = _configuration["JWT:ISSUER"],
+                    ValidAudience = _configuration["JWT:ISSUER"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:KEY"]))
                 };
             });
             services.AddAuthorization(options =>

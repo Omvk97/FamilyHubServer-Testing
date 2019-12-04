@@ -17,15 +17,17 @@
     <Folder Include="DTO\" />
     <Folder Include="Models\Event\" />
     <Folder Include="Data\Repositories\" />
-    <Folder Include="DTO\OutputDTOs\" />
-    <Folder Include="DTO\InputDTOs\" />
-    <Folder Include="Data\Repositories\Identity\" />
     <Folder Include="Helpers\Hashing\" />
     <Folder Include="Helpers\Jwt\" />
-    <Folder Include="Options\" />
     <Folder Include="Contracts\" />
     <Folder Include="Controllers\V1\" />
     <Folder Include="Contracts\V1\" />
+    <Folder Include="Helpers\Extensions\" />
+    <Folder Include="Data\Repositories\V1\" />
+    <Folder Include="Data\Repositories\V1\Identity\" />
+    <Folder Include="DTO\V1\" />
+    <Folder Include="DTO\V1\InputDTOs\" />
+    <Folder Include="DTO\V1\OutputDTOs\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.1" />

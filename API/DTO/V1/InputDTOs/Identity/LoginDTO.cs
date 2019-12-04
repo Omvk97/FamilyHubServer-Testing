@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace API.DTO.InputDTOs
+namespace API.DTO.InputDTOs.V1.Identity
 {
     public class LoginDTO
     {

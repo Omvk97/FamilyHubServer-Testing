@@ -10,7 +10,6 @@ namespace API.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-        public DbSet<Credential> Credentials { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Family> Families { get; set; }
         public DbSet<Event> Events { get; set; }
@@ -18,13 +17,17 @@ namespace API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Credential>()
-                .HasIndex(c => c.Email)
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
                 .IsUnique();
 
             modelBuilder.Entity<Event>()
                 .Property(e => e.Description)
                 .HasDefaultValue("");
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.ProfileColor)
+                .HasDefaultValue("#808080");
 
             modelBuilder.Entity<UserEvent>()
             .HasKey(ue => new { ue.UserId, ue.EventId });

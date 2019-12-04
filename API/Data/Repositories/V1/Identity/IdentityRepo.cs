@@ -1,0 +1,57 @@
+﻿using System;
+using System.Threading.Tasks;
+using API.DTO.InputDTOs.V1.Identity;
+using API.Helpers.Hashing;
+using API.Models;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+
+namespace API.Data.Repositories.V1
+{
+    public class IdentityRepo : IIdentityRepo
+    {
+        private readonly DataContext _context;
+        private readonly IHashing _hashing;
+        private readonly IMapper _mapper;
+
+        public IdentityRepo(DataContext context, IHashing hashing, IMapper mapper)
+        {
+            _context = context;
+            _hashing = hashing;
+            _mapper = mapper;
+        }
+
+        public async Task<User> CheckUserInput(string email, string password)
+        {
+            try
+            {
+                var user = await _context.Users
+                .FirstOrDefaultAsync(
+                c => c.Email.Equals(email));
+
+                var passwordCorrect = _hashing.Check(user.Password, password);
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<Family> CheckFamilyExists(Guid familyId)
+        {
+            return await _context.Families.FirstOrDefaultAsync(f => f.Id == familyId);
+        }
+
+        public async Task<User> CreateUser(RegisterDTO userInput)
+        {
+            var user = _mapper.Map<User>(userInput);
+            user.Password = _hashing.Hash(user.Password);
+
+            _context.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+    }
+}

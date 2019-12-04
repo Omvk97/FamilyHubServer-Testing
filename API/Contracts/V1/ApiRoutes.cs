@@ -15,9 +15,9 @@ namespace API.Contracts.V1
 
             public const string Login = "login";
 
-            public const string Register = Base + "register";
+            public const string Register = "register";
 
-            public const string Refresh = Base + "refresh";
+            public const string Refresh = "refresh";
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace API.DTO.OutputDTOs
+namespace API.DTO.OutputDTOs.V1.Identity
 {
     public class SucessLoginDTO
     {

@@ -18,25 +18,24 @@ namespace API.Helpers.Jwt
             _configuration = configuration;
         }
 
-        public string CreateJwt(Credential userCredential)
+        public string CreateJwt(User user)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["JWT_SECRET"]);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:KEY"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var claims = new[]
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim("email", userCredential.Email),
-                    new Claim("userId", userCredential.Id.ToString()),
-                    new Claim("accountType", userCredential.UserType.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(30),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key)
-                , SecurityAlgorithms.HmacSha256Signature)
+                new Claim("email", user.Email),
+                new Claim("userId", user.Id.ToString())
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+
+            var token = new JwtSecurityToken(_configuration["JWT:ISSUER"],
+                _configuration["JWT:ISSUER"],
+                claims,
+                expires: DateTime.Now.AddDays(30),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public Dictionary<string, string> ReadVerifiedJwtToken(string verifiedJwtToken)

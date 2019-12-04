@@ -58,24 +58,27 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    CredentialId = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    FamilyId = table.Column<Guid>(nullable: false)
+                    ProfilePicturePath = table.Column<string>(nullable: true),
+                    ProfileColor = table.Column<string>(nullable: false, defaultValue: "#808080"),
+                    FamilyId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Users_Credentials_CredentialId",
+                        column: x => x.CredentialId,
+                        principalTable: "Credentials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Users_Families_FamilyId",
                         column: x => x.FamilyId,
                         principalTable: "Families",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Users_Credentials_Id",
-                        column: x => x.Id,
-                        principalTable: "Credentials",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -171,6 +174,11 @@ namespace API.Migrations
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_CredentialId",
+                table: "Users",
+                column: "CredentialId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_FamilyId",
                 table: "Users",
                 column: "FamilyId");
@@ -194,10 +202,10 @@ namespace API.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Families");
+                name: "Credentials");
 
             migrationBuilder.DropTable(
-                name: "Credentials");
+                name: "Families");
         }
     }
 }

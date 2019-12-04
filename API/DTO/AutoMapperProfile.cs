@@ -1,4 +1,5 @@
-﻿using System;
+﻿using API.DTO.InputDTOs.V1.Identity;
+using API.Models;
 using AutoMapper;
 
 namespace API.DTO
@@ -7,6 +8,7 @@ namespace API.DTO
     {
         public AutoMapperProfile()
         {
+            CreateMap<RegisterDTO, User>();
         }
     }
 }

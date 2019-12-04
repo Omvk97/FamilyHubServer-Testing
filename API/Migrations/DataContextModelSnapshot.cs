@@ -152,16 +152,31 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("FamilyId")
+                    b.Property<Guid>("CredentialId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("FamilyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ProfileColor")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("#808080");
+
+                    b.Property<string>("ProfilePicturePath")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CredentialId");
 
                     b.HasIndex("FamilyId");
 
@@ -212,17 +227,15 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.User", b =>
                 {
-                    b.HasOne("API.Models.Family", "Family")
-                        .WithMany("Members")
-                        .HasForeignKey("FamilyId")
+                    b.HasOne("API.Models.Credential", "Credential")
+                        .WithMany()
+                        .HasForeignKey("CredentialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Credential", "Credential")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("API.Models.Family", "Family")
+                        .WithMany("Members")
+                        .HasForeignKey("FamilyId");
                 });
 
             modelBuilder.Entity("API.Models.UserEvent", b =>
