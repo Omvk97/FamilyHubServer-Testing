@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using API.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -24,7 +23,7 @@ namespace API.IntegrationTests
                 {
                     services.Remove(descriptor);
                 }
-
+                // TODO: Consider using a real database instead, as this does not use migrations and such which can create problems
                 // Add ApplicationDbContext using an in-memory database for testing.
                 services.AddDbContext<DataContext>(options =>
                 {
