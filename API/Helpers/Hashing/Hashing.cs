@@ -12,17 +12,15 @@ namespace API.Helpers.Hashing
 
         public string Hash(string password)
         {
-            using (var algorithm = new Rfc2898DeriveBytes(
+            using var algorithm = new Rfc2898DeriveBytes(
                     password,
                     SALT_SIZE,
                     ITERATIONS,
-                    HashAlgorithmName.SHA512))
-            {
-                var hashedPassword = Convert.ToBase64String(algorithm.GetBytes(KEY_SIZE));
-                var salt = Convert.ToBase64String(algorithm.Salt);
+                    HashAlgorithmName.SHA512);
+            var hashedPassword = Convert.ToBase64String(algorithm.GetBytes(KEY_SIZE));
+            var salt = Convert.ToBase64String(algorithm.Salt);
 
-                return $"{ITERATIONS}.{salt}.{hashedPassword}";
-            }
+            return $"{ITERATIONS}.{salt}.{hashedPassword}";
         }
 
         public bool Check(string hash, string inputPassword)
@@ -38,20 +36,18 @@ namespace API.Helpers.Hashing
             var iterations = Convert.ToInt32(parts[0]);
             var salt = Convert.FromBase64String(parts[1]);
 
-            using (var algorithm = new Rfc2898DeriveBytes(
+            using var algorithm = new Rfc2898DeriveBytes(
               inputPassword,
               salt,
               iterations,
-              HashAlgorithmName.SHA512))
-            {
-                var inputPasswordHashed = algorithm.GetBytes(KEY_SIZE);
+              HashAlgorithmName.SHA512);
+            var inputPasswordHashed = algorithm.GetBytes(KEY_SIZE);
 
-                var hashedPassword = Convert.FromBase64String(parts[2]);
+            var hashedPassword = Convert.FromBase64String(parts[2]);
 
-                var verified = inputPasswordHashed.SequenceEqual(hashedPassword);
+            var verified = inputPasswordHashed.SequenceEqual(hashedPassword);
 
-                return verified;
-            }
+            return verified;
         }
     }
 }

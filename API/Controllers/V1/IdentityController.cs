@@ -2,61 +2,57 @@
 using System.Threading.Tasks;
 using API.Contracts.V1;
 using API.Data.Repositories.V1;
-using API.DTO.InputDTOs.V1.Identity;
+using API.DTO.InputDTOs.V1.IdentityDTOs;
 using API.DTO.OutputDTOs.V1;
-using API.DTO.OutputDTOs.V1.Identity;
-using API.Helpers.Jwt;
+using API.DTO.OutputDTOs.V1.IdentityDTOs;
+using API.DTO.V1.OutputDTOs.UserDTOs;
+using API.Helpers.JwtHelper;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers.V1
 {
     [ApiController]
-    [Route(ApiRoutes.Identity.ControllerRoute)]
     public class IdentityController : ControllerBase
     {
         private readonly IIdentityRepo _repo;
-        private readonly IJwt _jwtHelper;
+        private readonly IJwtHelper _jwtHelper;
+        private readonly IMapper _mapper;
 
-        public IdentityController(IIdentityRepo repo, IJwt jwt)
+        public IdentityController(IIdentityRepo repo, IJwtHelper jwt, IMapper mapper)
         {
             _repo = repo;
             _jwtHelper = jwt;
+            _mapper = mapper;
         }
 
-        [HttpPost(ApiRoutes.Identity.Login)]
+        [HttpPost(ApiRoutes.IdentityRoutes.Login)]
         public async Task<ActionResult> Login(LoginDTO userInput)
         {
             try
             {
-                var user = await _repo.CheckUserInput(userInput.Email, userInput.Password);
+                var user = await _repo.CheckUserLoginInput(userInput.Email, userInput.Password);
 
                 var jwt = _jwtHelper.CreateJwt(user);
 
-                return Ok(new SucessLoginDTO { Jwt = jwt });
+                return Ok(new SucessLoginDTO { Token = jwt });
             }
             catch (NullReferenceException)
             {
-                return Unauthorized(new UserInputErrorDTO { ErrorMessage = "Invalid login" });
+                return Unauthorized(new UserInputErrorDTO { ErrorMessage = ErrorMessages.InvalidLogin });
             }
             catch (FormatException fex)
             {
                 // TODO: Proper logging
                 Console.WriteLine("ERROR " + fex.InnerException);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Please try again later!");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorMessages.ServerError);
             }
         }
 
-        [HttpPost(ApiRoutes.Identity.Register)]
+        [HttpPost(ApiRoutes.IdentityRoutes.Register)]
         public async Task<ActionResult> Register(RegisterDTO userInput)
         {
-            if (userInput.FamilyId != null)
-            {
-                var family = await _repo.CheckFamilyExists((Guid)userInput.FamilyId);
-                if (family == null) return BadRequest(new UserInputErrorDTO { ErrorMessage = "Family does not exist" });
-            }
-
             try
             {
                 var user = await _repo.CreateUser(userInput);
@@ -64,17 +60,14 @@ namespace API.Controllers.V1
 
                 return StatusCode(StatusCodes.Status201Created, new SucessRegisterDTO
                 {
-                    User = user,
+                    User = _mapper.Map<SuccessGetUserDTO>(user),
                     Token = token
                 });
             }
-            catch (DbUpdateException)
+            catch (ArgumentException e)
             {
-                return BadRequest(new UserInputErrorDTO { ErrorMessage = "Email already exists" });
+                return BadRequest(new UserInputErrorDTO { ErrorMessage = e.Message });
             }
         }
-
-
-
     }
 }

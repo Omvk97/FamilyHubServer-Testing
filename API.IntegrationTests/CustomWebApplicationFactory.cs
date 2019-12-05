@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using API.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -27,21 +28,20 @@ namespace API.IntegrationTests
                 // Add ApplicationDbContext using an in-memory database for testing.
                 services.AddDbContext<DataContext>(options =>
                 {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    options.UseInMemoryDatabase("in memory" + new Guid().ToString());
                 });
 
                 // Build the service provider.
                 var sp = services.BuildServiceProvider();
 
                 // Create a scope to obtain a reference to the database
-                // context (ApplicationDbContext).
+                // context (DataContext).
                 using (var scope = sp.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<DataContext>();
                     var logger = scopedServices
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
-
                     // Ensure the database is created.
                     db.Database.EnsureCreated();
                 }
