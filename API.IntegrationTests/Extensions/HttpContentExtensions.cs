@@ -20,5 +20,12 @@ namespace API.IntegrationTests.Extensions
             var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
             return await client.PostAsync(requestUrl, stringContent);
         }
+
+        public static async Task<HttpResponseMessage> PatchAsJsonAsync<TModel>(this HttpClient client, string requestUrl, TModel model)
+        {
+            var json = JsonConvert.SerializeObject(model);
+            var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+            return await client.PatchAsync(requestUrl, stringContent);
+        }
     }
 }

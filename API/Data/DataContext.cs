@@ -14,6 +14,7 @@ namespace API.Data
         public DbSet<Family> Families { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<UserEvent> UserEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

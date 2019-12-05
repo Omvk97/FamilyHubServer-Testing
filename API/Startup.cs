@@ -1,9 +1,10 @@
 using System.Text;
 using API.Data;
 using API.Data.Repositories.V1;
+using API.Data.Repositories.V1.UserRepo;
 using API.DTO;
 using API.Helpers.Hashing;
-using API.Helpers.Jwt;
+using API.Helpers.JwtHelper;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace API
 {
@@ -29,16 +31,22 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            }
+            );
 
             services.AddDbContext<DataContext>(options => options.UseNpgsql(_configuration["DEV_DATABASE_CONNECTION_STRING"]));
-            
+
             // Repository dependency injection
             services.AddScoped<IIdentityRepo, IdentityRepo>();
+            services.AddScoped<IUserRepo, UserRepo>();
 
             // Helper injection
             services.AddSingleton<IHashing, Hashing>();
-            services.AddSingleton<IJwt, Jwt>();
+            services.AddSingleton<IJwtHelper, JwtHelper>();
 
             // Auto Mapper Configurations
             var mappingConfig = new MapperConfiguration(mc =>
@@ -54,17 +62,10 @@ namespace API
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = _configuration["JWT:ISSUER"],
-                    ValidAudience = _configuration["JWT:ISSUER"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:KEY"]))
-                };
+                options.TokenValidationParameters = JwtHelper
+                .GetTokenValidationParameters(_configuration);
             });
+
             services.AddAuthorization(options =>
             {
                 //options.AddPolicy("AdministratorOnly", policy => policy.RequireClaim("accountType", AccountType.Administrator.ToString()));
@@ -101,6 +102,8 @@ namespace API
                 app.UseHsts();
             }
 
+            UpdateDatabase(app);
+
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseSwagger();
@@ -122,6 +125,20 @@ namespace API
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<DataContext>())
+                {
+
+                    context.Database.EnsureCreated();
+                }
+            }
         }
     }
 }

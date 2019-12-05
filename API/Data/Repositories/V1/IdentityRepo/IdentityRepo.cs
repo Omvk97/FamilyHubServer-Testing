@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using API.DTO.InputDTOs.V1.Identity;
+using API.Contracts.V1;
+using API.DTO.InputDTOs.V1.IdentityDTOs;
 using API.Helpers.Hashing;
 using API.Models;
 using AutoMapper;
@@ -21,13 +22,15 @@ namespace API.Data.Repositories.V1
             _mapper = mapper;
         }
 
-        public async Task<User> CheckUserInput(string email, string password)
+        public async Task<User> CheckUserLoginInput(string email, string password)
         {
             try
             {
                 var user = await _context.Users
-                .FirstOrDefaultAsync(
+                .SingleOrDefaultAsync(
                 c => c.Email.Equals(email));
+
+                if (user == null) return null;
 
                 var passwordCorrect = _hashing.Check(user.Password, password);
 
@@ -46,6 +49,17 @@ namespace API.Data.Repositories.V1
 
         public async Task<User> CreateUser(RegisterDTO userInput)
         {
+            var emailInUse = await _context.Users.AnyAsync(u => u.Email == userInput.Email);
+            if (emailInUse)
+                throw new ArgumentException(ErrorMessages.EmailInuse);
+
+            if (userInput.FamilyId != null)
+            {
+                var family = await CheckFamilyExists((Guid)userInput.FamilyId);
+                if (family == null)
+                    throw new ArgumentException(ErrorMessages.FamilyDoesNotExist);
+            }
+
             var user = _mapper.Map<User>(userInput);
             user.Password = _hashing.Hash(user.Password);
 
