@@ -36,7 +36,7 @@ namespace API
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             }
-                );
+            );
 
             services.AddDbContext<DataContext>(options => options.UseNpgsql(_configuration["DEV_DATABASE_CONNECTION_STRING"]));
 
@@ -102,6 +102,8 @@ namespace API
                 app.UseHsts();
             }
 
+            UpdateDatabase(app);
+
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseSwagger();
@@ -123,6 +125,20 @@ namespace API
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<DataContext>())
+                {
+
+                    context.Database.EnsureCreated();
+                }
+            }
         }
     }
 }

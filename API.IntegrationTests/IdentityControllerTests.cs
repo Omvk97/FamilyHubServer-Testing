@@ -13,57 +13,57 @@ namespace API.IntegrationTests
     public class IdentityControllerTests : IntegrationTest
     {
 
-        //[Fact]
-        //public async Task Register_IncorrectBody_Returns400BadRequest()
-        //{
-        //    // Arrange
-        //    var userRegistration = await CreateTestUserInDb(false);
+        [Fact]
+        public async Task Register_IncorrectBody_Returns400BadRequest()
+        {
+            // Arrange
+            var userRegistration = await CreateTestUserInDb(false);
 
-        //    // Act
-        //    var responseEmpty = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
-        //    {
-        //        // EMPTY
-        //    });
+            // Act
+            var responseEmpty = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
+            {
+                // EMPTY
+            });
 
-        //    var responseInvalidEmail = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
-        //    {
-        //        Email = "asd.dk"
-        //    });
+            var responseInvalidEmail = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
+            {
+                Email = "asd.dk"
+            });
 
-        //    var responseInvalidPassword = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
-        //    {
-        //        Email = "succes@email.com",
-        //        Password = "asd",
-        //        Name = "Mr. test"
-        //    });
+            var responseInvalidPassword = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
+            {
+                Email = "succes@email.com",
+                Password = "asd",
+                Name = "Mr. test"
+            });
 
-        //    // Assert
-        //    responseEmpty.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //    responseInvalidEmail.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //    responseInvalidPassword.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //}
+            // Assert
+            responseEmpty.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            responseInvalidEmail.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            responseInvalidPassword.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
 
-        //[Fact]
-        //public async Task Login_InCorrectBody_Returns400BadRequest()
-        //{
-        //    // Arrange
-        //    var userRegistration = await CreateTestUserInDb(false);
+        [Fact]
+        public async Task Login_InCorrectBody_Returns400BadRequest()
+        {
+            // Arrange
+            var userRegistration = await CreateTestUserInDb(false);
 
-        //    // Act
-        //    var responseEmpty = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
-        //    {
-        //        // EMPTY
-        //    });
+            // Act
+            var responseEmpty = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
+            {
+                // EMPTY
+            });
 
-        //    var responseInvalidEmail = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
-        //    {
-        //        Email = "asd.dk"
-        //    });
+            var responseInvalidEmail = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
+            {
+                Email = "asd.dk"
+            });
 
-        //    // Assert
-        //    responseEmpty.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //    responseInvalidEmail.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //}
+            // Assert
+            responseEmpty.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            responseInvalidEmail.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
 
         [Fact]
         public async Task Login_CorrectBody_ReturnsOkAndJWT()

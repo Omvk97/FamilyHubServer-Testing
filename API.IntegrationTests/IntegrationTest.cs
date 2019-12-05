@@ -42,13 +42,10 @@ namespace API.IntegrationTests
                         {
                             services.Remove(descriptor);
                         }
-                        // TODO: Consider using a real database instead, as this does not use migrations and such which can create problems
-                        // Add ApplicationDbContext using an in-memory database for testing.
-                        services.AddDbContext<DataContext>(options =>
-                        {
-                            var databaseName = Guid.NewGuid();
-                            options.UseInMemoryDatabase("inMemory" + databaseName.ToString());
-                        });
+                        // Note: xUnit creates a new instance of the test class for each method marked [Fact] which means this constructor will be called
+                        // for each test method. A random database is then used for each test method, so they don't interfere
+                        var randomDatabaseName = Guid.NewGuid().ToString();
+                        services.AddDbContext<DataContext>(options => options.UseNpgsql("Host=localhost;Port=5433;Database=" + randomDatabaseName + "test-family-hub-server;Username=test-admin-user;Password=test-admin-password"));
 
                     });
                 });
