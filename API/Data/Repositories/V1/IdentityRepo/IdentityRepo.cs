@@ -27,8 +27,10 @@ namespace API.Data.Repositories.V1
             try
             {
                 var user = await _context.Users
-                .FirstOrDefaultAsync(
+                .SingleOrDefaultAsync(
                 c => c.Email.Equals(email));
+
+                if (user == null) return null;
 
                 var passwordCorrect = _hashing.Check(user.Password, password);
 
@@ -47,9 +49,9 @@ namespace API.Data.Repositories.V1
 
         public async Task<User> CreateUser(RegisterDTO userInput)
         {
-            //var emailInUse = await _context.Users.AnyAsync(u => u.Email == userInput.Email);
-            //if (emailInUse)
-            //    throw new ArgumentException(ErrorMessages.EmailInuse);
+            var emailInUse = await _context.Users.AnyAsync(u => u.Email == userInput.Email);
+            if (emailInUse)
+                throw new ArgumentException(ErrorMessages.EmailInuse);
 
             if (userInput.FamilyId != null)
             {

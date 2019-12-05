@@ -6,96 +6,83 @@ using API.Contracts.V1;
 using API.DTO.V1.InputDTOs.UserDTOs;
 using API.DTO.V1.OutputDTOs.UserDTOs;
 using API.IntegrationTests.Extensions;
-using API.IntegrationTests.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 
 namespace API.IntegrationTests
 {
-    public class UserControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class UserControllerTests : IntegrationTest
     {
-        private readonly CustomWebApplicationFactory<Startup> _factory;
+        //[Fact]
+        //public async Task UserRoutes_InValidCredentials_ReturnsUnauthorized()
+        //{
+        //    // Arrange
+        //    TestClient.DefaultRequestHeaders.Authorization
+        //                 = new AuthenticationHeaderValue("Bearer", "asdasdasd");
+        //    // Act
+        //    var responseGetAllUsers = await TestClient.GetAsync(ApiRoutes.UserRoutes.GetAllUsers);
+        //    var responseGetUser = await TestClient.GetAsync(ApiRoutes.UserRoutes.GetUser);
+        //    var responseUpdateUser = await TestClient.PatchAsJsonAsync(ApiRoutes.UserRoutes.UpdateUser, new UpdateUserDTO { });
+        //    var responseDeleteUser = await TestClient.DeleteAsync(ApiRoutes.UserRoutes.DeleteUser);
+        //    var responseGetUserFamily = await TestClient.GetAsync(ApiRoutes.UserRoutes.GetUserFamily);
+        //    var responseGetUserEvents = await TestClient.GetAsync(ApiRoutes.UserRoutes.GetUserEvents);
 
-        public UserControllerTests(CustomWebApplicationFactory<Startup> factory)
-        {
-            _factory = factory;
-        }
+        //    // Assert
+        //    responseGetAllUsers.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        //    responseGetUser.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        //    responseUpdateUser.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        //    responseDeleteUser.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        //    responseGetUserFamily.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        //    responseGetUserEvents.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        //}
 
-        [Fact]
-        public async Task UserRoutes_InValidCredentials_ReturnsUnauthorized()
-        {
-            // Arrange
-            var client = _factory.CreateClient();
+        //[Fact]
+        //public async Task GetAllUsers_ValidCredentialsWithoutInclusions_ReturnsOkAndUsers()
+        //{
+        //    // Arrange
+        //    var userRegistration = await CreateTestUserInDb(false);
 
-            client.DefaultRequestHeaders.Authorization
-                         = new AuthenticationHeaderValue("Bearer", "asdasdasd");
-            // Act
-            var responseGetAllUsers = await client.GetAsync(ApiRoutes.UserRoutes.GetAllUsers);
-            var responseGetUser = await client.GetAsync(ApiRoutes.UserRoutes.GetUser);
-            var responseUpdateUser = await client.PatchAsJsonAsync(ApiRoutes.UserRoutes.UpdateUser, new UpdateUserDTO { });
-            var responseDeleteUser = await client.DeleteAsync(ApiRoutes.UserRoutes.DeleteUser);
-            var responseGetUserFamily = await client.GetAsync(ApiRoutes.UserRoutes.GetUserFamily);
-            var responseGetUserEvents = await client.GetAsync(ApiRoutes.UserRoutes.GetUserEvents);
+        //    TestClient.DefaultRequestHeaders.Authorization
+        //                 = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
 
-            // Assert
-            responseGetAllUsers.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
-            responseGetUser.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
-            responseUpdateUser.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
-            responseDeleteUser.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
-            responseGetUserFamily.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
-            responseGetUserEvents.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
-        }
+        //    // Act
+        //    var response = await TestClient.GetAsync(ApiRoutes.UserRoutes.GetAllUsers);
+        //    var responseContent = await response.Content.ReadAsJsonAsync<ICollection<SuccessGetUserDTO>>();
 
-        [Fact]
-        public async Task GetAllUsers_ValidCredentialsWithoutInclusions_ReturnsOkAndUsers()
-        {
-            // Arrange
-            var client = _factory.CreateClient();
+        //    // Assert
+        //    response.StatusCode.Should().Be(StatusCodes.Status200OK);
 
-            var testRegistration = await TestUser.CreateTestUserInDb(client, false);
+        //    var testUserFromResponse = responseContent.FirstOrDefault(u => u.Id == userRegistration.User.Id);
 
-            client.DefaultRequestHeaders.Authorization
-                         = new AuthenticationHeaderValue("Bearer", testRegistration.Token);
+        //    testUserFromResponse.Should().NotBeNull();
 
-            // Act
-            var response = await client.GetAsync(ApiRoutes.UserRoutes.GetAllUsers);
-            var responseContent = await response.Content.ReadAsJsonAsync<ICollection<SuccessGetUserDTO>>();
+        //    testUserFromResponse.Family.Should().BeNull();
+        //    testUserFromResponse.Events.Should().BeNullOrEmpty();
+        //}
 
-            // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        //[Fact]
+        //public async Task GetAllUsers_ValidCredentialsWithInclusion_ReturnsOkAndUsers()
+        //{
+        //    // Arrange
+        //    var userRegistration = await CreateTestUserInDb(false);
 
-            var testUserFromResponse = responseContent.FirstOrDefault(u => u.Id == testRegistration.User.Id);
+        //    TestClient.DefaultRequestHeaders.Authorization
+        //                 = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
+        //    // Act
+        //    var response = await TestClient.GetAsync(ApiRoutes.UserRoutes.GetAllUsers + "?includeFamily=true&includeEvents=true");
+        //    var responseContent = await response.Content.ReadAsJsonAsync<ICollection<SuccessGetUserDTO>>();
 
-            testUserFromResponse.Should().NotBeNull();
+        //    // Assert
+        //    response.StatusCode.Should().Be(StatusCodes.Status200OK);
 
-            testUserFromResponse.Family.Should().BeNull();
-            testUserFromResponse.Events.Should().BeNullOrEmpty();
-        }
+        //    var testUserFromResponse = responseContent.FirstOrDefault(u => u.Id == userRegistration.User.Id);
+        //    userRegistration.Should().NotBeNull();
 
-        [Fact]
-        public async Task GetAllUsers_ValidCredentialsWithInclusion_ReturnsOkAndUsers()
-        {
-            // Arrange
-            var client = _factory.CreateClient();
-            var testRegistration = await TestUser.CreateTestUserInDb(client, false);
-
-            client.DefaultRequestHeaders.Authorization
-                         = new AuthenticationHeaderValue("Bearer", testRegistration.Token);
-            // Act
-            var response = await client.GetAsync(ApiRoutes.UserRoutes.GetAllUsers + "?includeFamily=true&includeEvents=true");
-            var responseContent = await response.Content.ReadAsJsonAsync<ICollection<SuccessGetUserDTO>>();
-
-            // Assert
-            response.StatusCode.Should().Be(StatusCodes.Status200OK);
-
-            var testUserFromResponse = responseContent.FirstOrDefault(u => u.Id == testRegistration.User.Id);
-            testRegistration.Should().NotBeNull();
-
-            // TODO: Create test user with family
-            //testUser.Family.Should().NotBeNull();
-            testUserFromResponse.Events.Should().NotBeNull();
-        }
+        //    // TODO: Create test user with family
+        //    //testUser.Family.Should().NotBeNull();
+        //    testUserFromResponse.Events.Should().NotBeNull();
+        //}
 
         //[Fact]
         //public async Task GetUser_ValidCredentials_ReturnsOkAndUser()

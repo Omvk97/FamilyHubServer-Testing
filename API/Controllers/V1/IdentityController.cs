@@ -33,14 +33,13 @@ namespace API.Controllers.V1
             try
             {
                 var user = await _repo.CheckUserLoginInput(userInput.Email, userInput.Password);
-
+                if (user == null)
+                {
+                    return Unauthorized(new UserInputErrorDTO { ErrorMessage = ErrorMessages.InvalidLogin });
+                }
                 var jwt = _jwtHelper.CreateJwt(user);
 
                 return Ok(new SucessLoginDTO { Token = jwt });
-            }
-            catch (NullReferenceException)
-            {
-                return Unauthorized(new UserInputErrorDTO { ErrorMessage = ErrorMessages.InvalidLogin });
             }
             catch (FormatException fex)
             {

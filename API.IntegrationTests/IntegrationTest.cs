@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using API.Contracts.V1;
 using API.Data;
 using API.IntegrationTests.Extensions;
@@ -17,15 +15,16 @@ using System.Linq;
 
 namespace API.IntegrationTests
 {
-    public class IntegrationTest : IDisposable
+    public class IntegrationTest
     {
         protected readonly HttpClient TestClient;
         private readonly IServiceProvider _serviceProvider;
-
-        public static string Email = "test@example.com";
-        public static string Password = "Password1.!";
-        public static string Name = "Mr. Test";
-        public static string FamilyName = "Family Test";
+        public static RegisterDTO TestUser = new RegisterDTO
+        {
+            Email = "test@example.com",
+            Password = "Password1.!",
+            Name = "Mr. Test"
+        };
 
         protected IntegrationTest()
         {
@@ -47,7 +46,8 @@ namespace API.IntegrationTests
                         // Add ApplicationDbContext using an in-memory database for testing.
                         services.AddDbContext<DataContext>(options =>
                         {
-                            options.UseInMemoryDatabase("inMemory");
+                            var databaseName = Guid.NewGuid();
+                            options.UseInMemoryDatabase("inMemory" + databaseName.ToString());
                         });
 
                     });
@@ -59,28 +59,11 @@ namespace API.IntegrationTests
 
         public async Task<SucessRegisterDTO> CreateTestUserInDb(bool withFamily)
         {
-            var testUser = new RegisterDTO
-            {
-                Email = Email,
-                Password = Password,
-                Name = Name
-            };
-            if (withFamily)
-            {
-                // TODO: 
-            }
-            var registerResponse = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, testUser);
+            var registerResponse = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, TestUser);
             registerResponse.StatusCode.Should().Be(StatusCodes.Status201Created);
             var responseContent = await registerResponse.Content.ReadAsJsonAsync<SucessRegisterDTO>();
             responseContent.Token.Should().NotBeNullOrEmpty();
             return responseContent;
-        }
-
-        public void Dispose()
-        {
-            using var serviceScope = _serviceProvider.CreateScope();
-            var context = serviceScope.ServiceProvider.GetService<DataContext>();
-            context.Database.EnsureDeleted();
         }
     }
 }
