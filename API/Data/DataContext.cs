@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using API.Models;
+using API.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace API.V1.Data
+namespace API.Data
 {
     public class DataContext : DbContext
     {

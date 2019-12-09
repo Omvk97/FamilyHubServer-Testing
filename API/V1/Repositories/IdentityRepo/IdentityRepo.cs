@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using API.V1.Contracts;
-using API.DTO.InputDTOs.V1.IdentityDTOs;
+using API.V1.DTO.InputDTOs.IdentityDTOs;
 using API.Helpers.Hashing;
-using API.Models;
+using API.Data.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using API.Data;
 
-namespace API.V1.Data.Repositories.IdentityRepo
+namespace API.V1.Repositories.IdentityRepo
 {
     public class IdentityRepo : IIdentityRepo
     {
