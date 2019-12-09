@@ -10,27 +10,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Data\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="DTO\" />
-    <Folder Include="Models\Event\" />
-    <Folder Include="Data\Repositories\" />
+    <Folder Include="V1\DTO\" />
     <Folder Include="Helpers\Hashing\" />
     <Folder Include="Helpers\Jwt\" />
-    <Folder Include="Contracts\" />
-    <Folder Include="Controllers\V1\" />
-    <Folder Include="Contracts\V1\" />
     <Folder Include="Helpers\Extensions\" />
-    <Folder Include="Data\Repositories\V1\" />
-    <Folder Include="Data\Repositories\V1\IdentityRepo\" />
-    <Folder Include="DTO\V1\" />
-    <Folder Include="DTO\V1\InputDTOs\" />
-    <Folder Include="DTO\V1\OutputDTOs\" />
-    <Folder Include="Data\Repositories\V1\UserRepo\" />
-    <Folder Include="DTO\V1\InputDTOs\UserDTOs\" />
-    <Folder Include="DTO\V1\OutputDTOs\UserDTOs\" />
+    <Folder Include="Helpers\Utilities\" />
+    <Folder Include="V1\" />
+    <Folder Include="V1\Contracts\" />
+    <Folder Include="V1\Controllers\" />
+    <Folder Include="V1\Repositories\" />
+    <Folder Include="Data\Models\" />
+    <Folder Include="Data\Models\Event\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.1" />

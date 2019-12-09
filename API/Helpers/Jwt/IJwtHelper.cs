@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using API.Models;
+using API.Data.Models;
 
 namespace API.Helpers.JwtHelper
 {

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using API.Contracts.V1;
-using API.DTO.InputDTOs.V1.IdentityDTOs;
-using API.DTO.OutputDTOs.V1.IdentityDTOs;
-using API.DTO.V1.InputDTOs.UserDTOs;
-using API.DTO.V1.OutputDTOs.UserDTOs;
+using API.V1.Contracts;
+using API.V1.DTO.InputDTOs.UserDTOs;
+using API.V1.DTO.OutputDTOs.EventDTOs;
+using API.V1.DTO.OutputDTOs.FamilyDTOs;
+using API.V1.DTO.OutputDTOs.UserDTOs;
 using API.IntegrationTests.Extensions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -44,7 +44,7 @@ namespace API.IntegrationTests
         public async Task GetAllUsers_ValidCredentialsWithoutInclusions_ReturnsOkAndUsers()
         {
             // Arrange
-            var userRegistration = await CreateTestUserInDb(false);
+            var userRegistration = await CreateTestUserInDb(false, false);
 
             TestClient.DefaultRequestHeaders.Authorization
                          = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
@@ -68,7 +68,7 @@ namespace API.IntegrationTests
         public async Task GetAllUsers_ValidCredentialsWithInclusion_ReturnsOkAndUsers()
         {
             // Arrange
-            var userRegistration = await CreateTestUserInDb(false);
+            var userRegistration = await CreateTestUserInDb(false, false);
 
             TestClient.DefaultRequestHeaders.Authorization
                          = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
@@ -91,7 +91,7 @@ namespace API.IntegrationTests
         public async Task GetUser_ValidCredentials_ReturnsOkAndUser()
         {
             // Arrange
-            var userRegistration = await CreateTestUserInDb(false);
+            var userRegistration = await CreateTestUserInDb(false, false);
 
             TestClient.DefaultRequestHeaders.Authorization
                          = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
@@ -111,7 +111,7 @@ namespace API.IntegrationTests
         public async Task UpdateUser_ValidCredentialsAndUpdates_ReturnsOkAndUpdatedUser()
         {
             // Arrange
-            var userRegistration = await CreateTestUserInDb(false);
+            var userRegistration = await CreateTestUserInDb(false, false);
 
             TestClient.DefaultRequestHeaders.Authorization
              = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
@@ -134,22 +134,78 @@ namespace API.IntegrationTests
             response.StatusCode.Should().Be(StatusCodes.Status200OK);
 
             // Check new values
-            responseContent.Should().NotBeNull();
             responseContent.Email.Should().Be(updateUserDTO.NewEmail);
             responseContent.Name.Should().Be(updateUserDTO.NewName);
             responseContent.ProfileColor.Should().Be(updateUserDTO.NewProfileColor);
+        }
 
-            // Check if login with new values is possible
-            var loginResponse = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
-            {
-                Email = updateUserDTO.NewEmail,
-                Password = updateUserDTO.NewPassword
-            });
-            var loginResponseContent = await response.Content.ReadAsJsonAsync<SucessLoginDTO>();
+        [Fact]
+        public async Task DeleteUser_ValidCredentials_ReturnsOkAndDeletedUser()
+        {
+            // Arrange
+            var userRegistration = await CreateTestUserInDb(false, false);
+
+            TestClient.DefaultRequestHeaders.Authorization
+             = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
+
+            // Act
+            var response = await TestClient.DeleteAsync(ApiRoutes.UserRoutes.DeleteUser);
+            var responseContent = await response.Content.ReadAsJsonAsync<SuccessGetUserDTO>();
 
             // Assert
-            loginResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
-            loginResponseContent.Should().NotBeNull();
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+
+            // Check new values
+            responseContent.Email.Should().Be(userRegistration.User.Email);
+            responseContent.Name.Should().Be(userRegistration.User.Name);
+        }
+
+        [Fact]
+        public async Task GetUserFamily_ValidCredentials_ReturnsOkAndFamily()
+        {
+            // Arrange
+            var userRegistration = await CreateTestUserInDb(true, false);
+
+            TestClient.DefaultRequestHeaders.Authorization
+                    = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
+
+            // Act
+            var response = await TestClient.GetAsync(ApiRoutes.UserRoutes.GetUserFamily);
+            var responseContent = await response.Content.ReadAsJsonAsync<SuccessGetFamilyDTO>();
+
+            // Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+
+            // Check if user is in family
+            var testUserFromResponse = responseContent.Members.FirstOrDefault(u => u.Id == userRegistration.User.Id);
+
+            testUserFromResponse.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task GetUserEvents_ValidCredentialsParticipantCheck_ReturnsOkAndEvents()
+        {
+            // Arrange
+            var userRegistration = await CreateTestUserInDb(false, true);
+
+            TestClient.DefaultRequestHeaders.Authorization
+                    = new AuthenticationHeaderValue("Bearer", userRegistration.Token);
+
+            // Act
+            // user 1 checks events to only find one event
+            var response = await TestClient.GetAsync(ApiRoutes.UserRoutes.GetUserEvents);
+            var responseContent = await response.Content.ReadAsJsonAsync<ICollection<SuccessGetEventDTO>>();
+
+            // Assert
+            response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            responseContent.Should().NotBeNullOrEmpty();
+            // Check if user is a participant in all the events
+            foreach (var eventParticipant in responseContent.Select(e => e.Participants))
+            {
+                // Check that user is a participant in the event
+                var userAsParticipant = eventParticipant.SingleOrDefault(u => u.Id == userRegistration.User.Id);
+                userAsParticipant.Should().NotBeNull();
+            }
         }
     }
 }

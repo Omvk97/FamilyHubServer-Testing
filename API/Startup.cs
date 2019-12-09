@@ -1,8 +1,9 @@
 using System.Text;
 using API.Data;
-using API.Data.Repositories.V1;
-using API.Data.Repositories.V1.UserRepo;
-using API.DTO;
+using API.V1.Repositories.EventRepo;
+using API.V1.Repositories.FamilyRepo;
+using API.V1.Repositories.UserRepo;
+using API.V1.DTO;
 using API.Helpers.Hashing;
 using API.Helpers.JwtHelper;
 using AutoMapper;
@@ -13,9 +14,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using API.V1.Repositories.IdentityRepo;
 
 namespace API
 {
@@ -43,6 +44,8 @@ namespace API
             // Repository dependency injection
             services.AddScoped<IIdentityRepo, IdentityRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<IFamilyRepo, FamilyRepo>();
+            services.AddScoped<IEventRepo, EventRepo>();
 
             // Helper injection
             services.AddSingleton<IHashing, Hashing>();
@@ -129,16 +132,11 @@ namespace API
 
         private static void UpdateDatabase(IApplicationBuilder app)
         {
-            using (var serviceScope = app.ApplicationServices
+            using var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<DataContext>())
-                {
-
-                    context.Database.EnsureCreated();
-                }
-            }
+                .CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<DataContext>();
+            context.Database.EnsureCreated();
         }
     }
 }

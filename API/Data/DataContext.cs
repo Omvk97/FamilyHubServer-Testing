@@ -4,7 +4,7 @@ using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace API.Data
+namespace API.V1.Data
 {
     public class DataContext : DbContext
     {
@@ -15,6 +15,7 @@ namespace API.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<UserEvent> UserEvents { get; set; }
+        public DbSet<EventRepeatDetails> EventRepeatDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using API.Contracts.V1;
-using API.DTO.InputDTOs.V1.IdentityDTOs;
-using API.DTO.OutputDTOs.V1.IdentityDTOs;
+using API.V1.Contracts;
+using API.V1.DTO.InputDTOs.IdentityDTOs;
+using API.V1.DTO.OutputDTOs.IdentityDTOs;
 using API.IntegrationTests.Extensions;
 using FluentAssertions;
 using Xunit;
@@ -17,7 +17,7 @@ namespace API.IntegrationTests
         public async Task Register_IncorrectBody_Returns400BadRequest()
         {
             // Arrange
-            var userRegistration = await CreateTestUserInDb(false);
+            var userRegistration = await CreateTestUserInDb(false, false);
 
             // Act
             var responseEmpty = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
@@ -47,7 +47,7 @@ namespace API.IntegrationTests
         public async Task Login_InCorrectBody_Returns400BadRequest()
         {
             // Arrange
-            var userRegistration = await CreateTestUserInDb(false);
+            var userRegistration = await CreateTestUserInDb(false, false);
 
             // Act
             var responseEmpty = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
@@ -69,8 +69,8 @@ namespace API.IntegrationTests
         public async Task Login_CorrectBody_ReturnsOkAndJWT()
         {
             // Arrange
-            var userRegistration = await CreateTestUserInDb(false);
-                
+            var userRegistration = await CreateTestUserInDb(false, false);
+
             // Act
             var response = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
             {
@@ -78,7 +78,7 @@ namespace API.IntegrationTests
                 Password = TestUser.Password
             });
             var loginResponse = await response.Content.ReadAsJsonAsync<SucessLoginDTO>();
-                
+
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             loginResponse.Token.Should().NotBeEmpty();
