@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using API.Models;
+using API.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -14,6 +14,8 @@ namespace API.Data
         public DbSet<Family> Families { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<UserEvent> UserEvents { get; set; }
+        public DbSet<EventRepeatDetails> EventRepeatDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

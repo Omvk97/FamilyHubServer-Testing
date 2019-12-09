@@ -1,72 +1,87 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
-using API.Contracts.V1;
-using API.DTO.InputDTOs.V1.Identity;
-using API.DTO.OutputDTOs.V1.Identity;
+using API.V1.Contracts;
+using API.V1.DTO.InputDTOs.IdentityDTOs;
+using API.V1.DTO.OutputDTOs.IdentityDTOs;
 using API.IntegrationTests.Extensions;
 using FluentAssertions;
 using Xunit;
 
 namespace API.IntegrationTests
 {
-    public class IdentityControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class IdentityControllerTests : IntegrationTest
     {
-        private readonly CustomWebApplicationFactory<Startup> _factory;
-
-        public IdentityControllerTests(CustomWebApplicationFactory<Startup> factory)
-        {
-            _factory = factory;
-        }
 
         [Fact]
-        public async Task Login_WithEmptyBody_Returns400BadRequest()
+        public async Task Register_IncorrectBody_Returns400BadRequest()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var userRegistration = await CreateTestUserInDb(false, false);
 
             // Act
-            var route = ApiRoutes.Identity.ControllerRoute + "/" + ApiRoutes.Identity.Login;
-            var response = await client.PostAsJsonAsync(route, new LoginDTO
+            var responseEmpty = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
             {
                 // EMPTY
             });
 
-            // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-
-        }
-
-        [Fact]
-        public async Task Login_WithCorrectBody_ReturnsOkAndJWT()
-        {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-
-            // TestUser Registration
-            var routeRegister = ApiRoutes.Identity.ControllerRoute + "/" + ApiRoutes.Identity.Register;
-            var testUser = new RegisterDTO
+            var responseInvalidEmail = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
             {
-                Email = "test@example.com",
-                Password = "Password1.!",
-                Name = "Mr. Test"
-            };
-            var registerResponse = await client.PostAsJsonAsync(routeRegister, testUser);
-            registerResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+                Email = "asd.dk"
+            });
 
-            // Login
-            var route = ApiRoutes.Identity.ControllerRoute + "/" + ApiRoutes.Identity.Login;
-            var response = await client.PostAsJsonAsync(route, new LoginDTO
+            var responseInvalidPassword = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, new RegisterDTO
             {
-                Email = testUser.Email,
-                Password = testUser.Password
+                Email = "succes@email.com",
+                Password = "asd",
+                Name = "Mr. test"
             });
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            responseEmpty.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            responseInvalidEmail.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            responseInvalidPassword.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task Login_InCorrectBody_Returns400BadRequest()
+        {
+            // Arrange
+            var userRegistration = await CreateTestUserInDb(false, false);
+
+            // Act
+            var responseEmpty = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
+            {
+                // EMPTY
+            });
+
+            var responseInvalidEmail = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
+            {
+                Email = "asd.dk"
+            });
+
+            // Assert
+            responseEmpty.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            responseInvalidEmail.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task Login_CorrectBody_ReturnsOkAndJWT()
+        {
+            // Arrange
+            var userRegistration = await CreateTestUserInDb(false, false);
+
+            // Act
+            var response = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Login, new LoginDTO
+            {
+                Email = TestUser.Email,
+                Password = TestUser.Password
+            });
             var loginResponse = await response.Content.ReadAsJsonAsync<SucessLoginDTO>();
-            loginResponse.Jwt.Should().NotBeEmpty();
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            loginResponse.Token.Should().NotBeEmpty();
         }
     }
 }
