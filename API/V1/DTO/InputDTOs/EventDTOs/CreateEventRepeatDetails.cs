@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using API.Data.Models;
 using API.V1.Contracts;
 
 namespace API.V1.DTO.InputDTOs.EventDTOs
@@ -14,11 +15,6 @@ namespace API.V1.DTO.InputDTOs.EventDTOs
         public ICollection<DayOfWeek> WeekDays { get; set; }
 
         public DateTime? EndRepeat { get; set; }
-
-        public enum FrequencyOption
-        {
-            Daily, Weekly, Monthly, Yearly
-        }
 
         public class RequiredWhenFrequencyWeekdayAttribute : ValidationAttribute
         {

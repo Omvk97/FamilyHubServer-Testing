@@ -15,14 +15,6 @@ namespace API.V1.DTO.InputDTOs.EventDTOs
 
         public DateTime? NewEndRepeat { get; set; }
 
-        public enum FrequencyOption
-        {
-            Daily,
-            Weekly,
-            Monthly,
-            Yearly
-        }
-
         public ICollection<RepeatException> NewRepeatExceptions { get; set; }
 
         public class FrequencyOptionAttribute : ValidationAttribute

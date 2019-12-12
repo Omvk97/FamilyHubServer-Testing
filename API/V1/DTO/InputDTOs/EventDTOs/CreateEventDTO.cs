@@ -30,7 +30,6 @@ namespace API.V1.DTO.InputDTOs.EventDTOs
         
         public HashSet<Guid> ParticipantIds { get; set; }
 
-
         public class RequiredWhenAlldayNotSetAttribute : ValidationAttribute
         {
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)

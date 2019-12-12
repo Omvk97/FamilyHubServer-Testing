@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using API.Data.Models;
 
 namespace API.V1.DTO.OutputDTOs.EventDTOs
 {
@@ -14,17 +15,5 @@ namespace API.V1.DTO.OutputDTOs.EventDTOs
         public DateTime EndRepeat { get; set; }
 
         public ICollection<RepeatException> Exceptions { get; set; }
-
-        public enum FrequencyOption
-        {
-            Daily, Weekly, Monthly, Yearly
-        }
-
-        public class RepeatException
-        {
-            public DateTime? ChangedStartTime { get; set; }
-            public DateTime? ChangedEndTime { get; set; }
-            public DateTime? Removed { get; set; }
-        }
     }
 }
