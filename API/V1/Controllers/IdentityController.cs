@@ -14,6 +14,7 @@ using API.V1.Repositories.IdentityRepo;
 namespace API.V1.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     public class IdentityController : ControllerBase
     {
         private readonly IIdentityRepo _repo;

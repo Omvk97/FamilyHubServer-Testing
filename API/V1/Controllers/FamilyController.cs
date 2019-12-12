@@ -16,6 +16,7 @@ namespace API.V1.Controllers
 {
     [ApiController]
     [Authorize]
+    [Produces("application/json")]
     public class FamilyController : ControllerBase
     {
         private readonly IFamilyRepo _repo;

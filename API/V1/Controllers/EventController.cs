@@ -16,6 +16,7 @@ namespace API.V1.Controllers
 {
     [ApiController]
     [Authorize]
+    [Produces("application/json")]
     public class EventController : ControllerBase
     {
         private readonly IEventRepo _repo;
@@ -29,6 +30,9 @@ namespace API.V1.Controllers
             _jwtHelper = jwtHelper;
         }
 
+        /// <summary>
+        /// Creates an event with authorized user as Owner
+        /// </summary>
         [HttpPost(ApiRoutes.EventRoutes.CreateEvent)]
         public async Task<ActionResult<SuccessGetEventDTO>> GreateEvent(CreateEventDTO userInput)
         {

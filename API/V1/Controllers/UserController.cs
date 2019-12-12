@@ -17,6 +17,7 @@ namespace API.V1.Controllers
 {
     [ApiController]
     [Authorize]
+    [Produces("application/json")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepo _repo;
