@@ -23,7 +23,6 @@ namespace API.Data.Models
 
         public ICollection<RepeatException> Exceptions { get; set; }
 
-
         public enum FrequencyOption
         {
             Daily, Weekly, Monthly, Yearly
@@ -31,11 +30,9 @@ namespace API.Data.Models
 
         public class RepeatException
         {
-            [Required]
-            public DateTime ChangedStartTime { get; set; }
-            [Required]
-            public DateTime ChangedEndTime { get; set; }
-            public bool Removed { get; set; }
+            public DateTime? ChangedStartTime { get; set; }
+            public DateTime? ChangedEndTime { get; set; }
+            public DateTime? Removed { get; set; }
         }
 
         public class RequiredWhenFrequencyWeekdayAttribute : ValidationAttribute

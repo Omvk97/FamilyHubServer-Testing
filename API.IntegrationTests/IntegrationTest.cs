@@ -71,6 +71,7 @@ namespace API.IntegrationTests
             var registerResponse = await TestClient.PostAsJsonAsync(ApiRoutes.IdentityRoutes.Register, testUser);
             registerResponse.StatusCode.Should().Be(StatusCodes.Status201Created);
             var registerResponseContent = await registerResponse.Content.ReadAsJsonAsync<SucessRegisterDTO>();
+            registerResponseContent.User.Should().NotBeNull();
             registerResponseContent.Token.Should().NotBeNullOrEmpty();
 
 
@@ -85,9 +86,11 @@ namespace API.IntegrationTests
                     = new AuthenticationHeaderValue("Bearer", registerResponseContent.Token);
 
                 var familyResponse = await TestClient.PostAsJsonAsync(ApiRoutes.FamilyRoutes.CreateFamily, familyDTO);
-                familyResponse.StatusCode.Should().Be(StatusCodes.Status201Created);
-                var familyResponseContent = await familyResponse.Content.ReadAsJsonAsync<SuccessGetFamilyDTO>();
 
+                familyResponse.StatusCode.Should().Be(StatusCodes.Status201Created);
+
+                var familyResponseContent = await familyResponse.Content.ReadAsJsonAsync<SuccessGetFamilyDTO>();
+                
                 var testUserFromResponse = familyResponseContent.Members.FirstOrDefault(u => u.Id == registerResponseContent.User.Id);
 
                 testUserFromResponse.Should().NotBeNull();

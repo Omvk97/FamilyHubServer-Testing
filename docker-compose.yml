@@ -1,21 +1,44 @@
-version: '3.4'
+﻿version: '3.4'
+
+# Disclaimer: This is not a production ready docker-compose, environment variables are pushed to Git
+
+networks:
+    front:
+        driver: bridge
+    back:
+        driver: bridge
 
 services:
-    dev_database:
+    api:
+        build: ./API
+        restart: always
+        environment:
+            - DATABASE_CONNECTION_STRING=Host=database;Port=5432;Database=family-hub-server;Username=admin-user;Password=admin-password
+            - JWT__KEY=ThisismySecretKey
+            - JWT__ISSUER=FamilyHub.dk
+        ports:
+            - "5000:80"
+            - "5001:443"
+        depends_on:
+            - database
+            - redis
+        networks:
+            - front
+            - back
+
+    database:
         image: postgres
         restart: always
         environment:
-            POSTGRES_USER: dev-admin-user
-            POSTGRES_PASSWORD: dev-admin-password
-            POSTGRES_DB: dev-family-hub-server
+            POSTGRES_USER: admin-user
+            POSTGRES_PASSWORD: admin-password
+            POSTGRES_DB: family-hub-server
+        networks:
+            - back
+    redis:
+        image: redis
+        container_name: redis
         ports:
-            - '5432:5432'
-    test_database:
-        image: postgres
-        restart: always
-        environment:
-            POSTGRES_USER: test-admin-user
-            POSTGRES_PASSWORD: test-admin-password
-            POSTGRES_DB: test-family-hub-server
-        ports:
-            - '5433:5432'
+          - "6379:6379"
+        networks:
+          - back

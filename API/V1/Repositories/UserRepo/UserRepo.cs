@@ -36,12 +36,16 @@ namespace API.V1.Repositories.UserRepo
 
         public async Task<User> GetUserById(Guid userId)
         {
-            return await _context.Users.FindAsync(userId);
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) throw new ArgumentException(ErrorMessages.UserDoesNotExist);
+
+            return user;
         }
 
         public async Task<User> UpdateUser(Guid userId, UpdateUserDTO userInput)
         {
-            var userToUpdate = await GetUserById(userId);
+            var userToUpdate = await _context.Users.FindAsync(userId);
+            if (userToUpdate == null) throw new ArgumentException(ErrorMessages.UserDoesNotExist);
 
             if (userInput.NewName != null) userToUpdate.Name = userInput.NewName;
             if (userInput.NewPassword != null) userToUpdate.Password = _hashing.Hash(userInput.NewPassword);
@@ -73,6 +77,7 @@ namespace API.V1.Repositories.UserRepo
         public async Task<User> DeleteUser(Guid userId)
         {
             var user = await _context.Users.FindAsync(userId);
+            if (user == null) throw new ArgumentException(ErrorMessages.UserDoesNotExist);
             _context.Remove(user);
             await _context.SaveChangesAsync();
             return user;
@@ -82,19 +87,24 @@ namespace API.V1.Repositories.UserRepo
         {
             var user = await _context.Users.Include(u => u.Family)
                 .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null) throw new ArgumentException(ErrorMessages.UserDoesNotExist);
+
             return user.Family;
         }
 
         public async Task<IEnumerable<Event>> GetUserEvents(Guid userId)
         {
-            var userEvents = await _context.Users
+            // All users fields are also gathered here as it is needed to fill out participants in each event
+            var user = await _context.Users
                 .Where(ue => ue.Id == userId)
                 .Include(ue => ue.Events)
                 .ThenInclude(e => e.Event)
-                .ToListAsync();
-            var test = userEvents.SelectMany(u => u.Events).Select(ue => ue.Event).ToList();
+                .SingleOrDefaultAsync();
 
-            return test;
+            if (user == null) throw new ArgumentException(ErrorMessages.UserDoesNotExist);
+
+            return user.Events.Select(ue => ue.Event).ToList();
         }
     }
 }

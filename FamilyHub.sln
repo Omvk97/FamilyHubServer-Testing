@@ -3,27 +3,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{35BE65EF-086A-46BE-9DBB-065B831E5A64}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{44031FA4-1643-4B19-BEBE-28513A01B51A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.IntegrationTests", "API.IntegrationTests\API.IntegrationTests.csproj", "{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{730E90F3-CB13-4E1B-8833-C6BAAC4B1F8A}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		docker-compose.dev.yml = docker-compose.dev.yml
+		.dockerignore = .dockerignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Default|Any CPU = Default|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{35BE65EF-086A-46BE-9DBB-065B831E5A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{35BE65EF-086A-46BE-9DBB-065B831E5A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35BE65EF-086A-46BE-9DBB-065B831E5A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35BE65EF-086A-46BE-9DBB-065B831E5A64}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44031FA4-1643-4B19-BEBE-28513A01B51A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44031FA4-1643-4B19-BEBE-28513A01B51A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44031FA4-1643-4B19-BEBE-28513A01B51A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44031FA4-1643-4B19-BEBE-28513A01B51A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35BE65EF-086A-46BE-9DBB-065B831E5A64}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{35BE65EF-086A-46BE-9DBB-065B831E5A64}.Default|Any CPU.Build.0 = Debug|Any CPU
 		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{46AC6C65-3ABA-417B-AFB9-4E9FA12412BB}.Default|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

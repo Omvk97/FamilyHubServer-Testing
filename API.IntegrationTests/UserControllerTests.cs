@@ -17,6 +17,8 @@ namespace API.IntegrationTests
 {
     public class UserControllerTests : IntegrationTest
     {
+        // TODO: Test admin routes, unauthorized with an account who isn't admin
+        // TODO: Test routes with a non existant user (get user by id, update user etc.)
         [Fact]
         public async Task UserRoutes_InValidCredentials_ReturnsUnauthorized()
         {

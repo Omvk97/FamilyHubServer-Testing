@@ -35,7 +35,7 @@ namespace API.V1.Controllers
                 var user = await _repo.CheckUserLoginInput(userInput.Email, userInput.Password);
                 if (user == null)
                 {
-                    return Unauthorized(new UserInputErrorDTO { ErrorMessage = ErrorMessages.InvalidLogin });
+                    return BadRequest(new UserInputErrorDTO { ErrorMessage = ErrorMessages.InvalidLogin });
                 }
                 var jwt = _jwtHelper.CreateJwt(user);
 

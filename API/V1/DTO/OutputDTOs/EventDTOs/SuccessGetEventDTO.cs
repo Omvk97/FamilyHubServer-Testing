@@ -21,7 +21,7 @@ namespace API.V1.DTO.OutputDTOs.EventDTOs
 
         public Guid? RepeatDetailsId { get; set; }
 
-        public EventRepeatDetails RepeatDetails { get; set; }
+        public SuccessGetEventRepeatDetailsDTO RepeatDetails { get; set; }
 
         public string Location { get; set; }
 

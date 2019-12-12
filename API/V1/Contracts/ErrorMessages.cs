@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using API.V1.DTO.InputDTOs.EventDTOs;
+
 namespace API.V1.Contracts
 {
     public static class ErrorMessages
@@ -22,8 +25,20 @@ namespace API.V1.Contracts
 
         public const string ParticipantDoesNotexist = "Participant(s) does not exist";
 
+        public const string UserDoesNotExist = "User does not exist";
+
         public const string WeekDaysOnlySetIfFrequencyWeekly = "This should only be set if Frequency is Weekly";
 
         public const string RequiredWhenAllDayNotSet = "Required when all day is not set";
+
+        public const string EventDoesNotExist = "Event does not exist";
+
+        public const string UserAlreadyHasAFamily = "User already has a family";
+
+        public const string RequiredWhenAllDayRemoved = "Required when All Day option is to be removed";
+
+        public const string OneParameterMustBeSetInARepeatException = "Atleast one paramter must be set when setting a repeat exception";
+
+        public const string InvalidFrequencyOption = "Invalid Frequency Option";
     }
 }

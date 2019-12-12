@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using API.V1.Repositories.IdentityRepo;
+using System;
 
 namespace API
 {
@@ -32,6 +33,7 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Console.WriteLine("CONFIGURATION " + _configuration["DATABASE_CONNECTION_STRING"]);
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -39,7 +41,7 @@ namespace API
             }
             );
 
-            services.AddDbContext<DataContext>(options => options.UseNpgsql(_configuration["DEV_DATABASE_CONNECTION_STRING"]));
+            services.AddDbContext<DataContext>(options => options.UseNpgsql(_configuration["DATABASE_CONNECTION_STRING"]));
 
             // Repository dependency injection
             services.AddScoped<IIdentityRepo, IdentityRepo>();
@@ -117,8 +119,6 @@ namespace API
             });
 
             app.UseRouting();
-
-            app.UseHttpsRedirection();
 
             app.UseAuthentication();
 

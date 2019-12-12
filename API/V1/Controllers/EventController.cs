@@ -10,6 +10,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace API.V1.Controllers
 {
@@ -39,6 +40,70 @@ namespace API.V1.Controllers
                 var createdEvent = await _repo.CreateEvent(userInput, userId);
 
                 return StatusCode(StatusCodes.Status201Created, (_mapper.Map<SuccessGetEventDTO>(createdEvent)));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new UserInputErrorDTO { ErrorMessage = e.Message });
+            }
+        }
+
+        [HttpGet(ApiRoutes.EventRoutes.GetAllEvents)]
+        public async Task<ActionResult<ICollection<SuccessGetEventDTO>>> GetAllEvents(Guid? userId)
+        {
+            try
+            {
+                var events = await _repo.GetAllEvents(userId);
+
+                return Ok(_mapper.Map<ICollection<SuccessGetEventDTO>>(events));
+
+            } catch (ArgumentException e)
+            {
+                return BadRequest(new UserInputErrorDTO { ErrorMessage = e.Message });
+            }
+        }
+
+        [HttpGet(ApiRoutes.EventRoutes.GetEvent + "/{eventId}")]
+        // TODO: [Authorize(Policy = "AdminOnly")]
+        public async Task<ActionResult<SuccessGetEventDTO>> GetEvent(Guid eventId)
+        {
+            try
+            {
+                var fetchedEvent = await _repo.GetEventById(eventId);
+
+                return Ok(_mapper.Map<SuccessGetEventDTO>(fetchedEvent));
+
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new UserInputErrorDTO { ErrorMessage = e.Message });
+            }
+        }
+
+        [HttpPatch(ApiRoutes.EventRoutes.UpdateEvent + "/{eventId}")]
+        // TODO: [Authorize(Policy = "AdminOnly")]
+        // TODO: Add another route should be made for when users want to update events only they are own
+        public async Task<ActionResult<SuccessGetEventDTO>> UpdateEvent(Guid eventId, UpdateEventDTO userInput)
+        {
+            try
+            {
+                var updatedEvent = await _repo.UpdateEvent(eventId, userInput);
+                return Ok(_mapper.Map<SuccessGetEventDTO>(updatedEvent));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new UserInputErrorDTO { ErrorMessage = e.Message });
+            }
+        }
+
+        [HttpDelete(ApiRoutes.EventRoutes.DeleteEvent + "/{eventId}")]
+        // TODO: [Authorize(Policy = "AdminOnly")]
+        // TODO: Add another route when users want to delete events only they have owner rights on
+        public async Task<ActionResult<ICollection<SuccessGetEventDTO>>> DeleteEvent(Guid eventId)
+        {
+            try
+            {
+                var deletedEvent = await _repo.DeleteEvent(eventId);
+                return Ok(_mapper.Map<SuccessGetEventDTO>(deletedEvent));
             }
             catch (ArgumentException e)
             {

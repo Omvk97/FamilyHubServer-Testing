@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using API.V1.Contracts;
-using API.Data.Models;
 
 namespace API.V1.DTO.InputDTOs.EventDTOs
 {
     public class CreateEventDTO
     {
+        [Required]
         [StringLength(50, MinimumLength = 1)]
         public string Title { get; set; }
 
@@ -15,10 +15,10 @@ namespace API.V1.DTO.InputDTOs.EventDTOs
         public string Description { get; set; }
 
         [RequiredWhenAlldayNotSet]
-        public DateTime StartTime { get; set; }
+        public DateTime? StartTime { get; set; }
 
         [RequiredWhenAlldayNotSet]
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         public DateTime? AllDay { get; set; }
 
@@ -36,14 +36,16 @@ namespace API.V1.DTO.InputDTOs.EventDTOs
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)
             {
                 var eventDetails = (CreateEventDTO)validationContext.ObjectInstance;
+                // If AllDay has been set, the field is not required
                 if (eventDetails.AllDay != null)
                 {
                     return ValidationResult.Success;
                 }
-                else
+                if (eventDetails.StartTime != null && eventDetails.EndTime != null)
                 {
-                    return new ValidationResult(ErrorMessages.RequiredWhenAllDayNotSet);
+                    return ValidationResult.Success;
                 }
+                return new ValidationResult(ErrorMessages.RequiredWhenAllDayNotSet);
             }
         }
     }

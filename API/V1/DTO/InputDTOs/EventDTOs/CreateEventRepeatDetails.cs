@@ -20,15 +20,6 @@ namespace API.V1.DTO.InputDTOs.EventDTOs
             Daily, Weekly, Monthly, Yearly
         }
 
-        public class RepeatException
-        {
-            [Required]
-            public DateTime ChangedStartTime { get; set; }
-            [Required]
-            public DateTime ChangedEndTime { get; set; }
-            public bool Removed { get; set; }
-        }
-
         public class RequiredWhenFrequencyWeekdayAttribute : ValidationAttribute
         {
             protected override ValidationResult IsValid(object value, ValidationContext validationContext)
