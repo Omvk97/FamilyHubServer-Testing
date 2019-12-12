@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using API.Data.Models;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
@@ -7,6 +9,10 @@ namespace API.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:frequency_option", "daily,weekly,monthly,yearly")
+                .Annotation("Npgsql:Enum:week_day", "monday,tuesday,wednesday,thursday,friday,saturday,sunday");
+
             migrationBuilder.CreateTable(
                 name: "Families",
                 columns: table => new
@@ -93,10 +99,10 @@ namespace API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Frequency = table.Column<int>(nullable: false),
-                    WeekDays = table.Column<string>(nullable: true),
+                    Frequency = table.Column<FrequencyOption>(nullable: false),
+                    WeekDays = table.Column<List<WeekDay>>(nullable: true),
                     EndRepeat = table.Column<DateTime>(nullable: true),
-                    Exceptions = table.Column<string>(nullable: true)
+                    Exceptions = table.Column<ICollection<RepeatException>>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
                 {

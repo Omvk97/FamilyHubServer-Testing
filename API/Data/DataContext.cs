@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using API.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace API.Data
 {
@@ -19,6 +17,9 @@ namespace API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasPostgresEnum<WeekDay>();
+            modelBuilder.HasPostgresEnum<FrequencyOption>();
+
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
@@ -45,17 +46,6 @@ namespace API.Data
                 .HasOne(ue => ue.Event)
                 .WithMany(e => e.Participants)
                 .HasForeignKey(ue => ue.EventId);
-
-            modelBuilder.Entity<EventRepeatDetails>()
-                .Property(e => e.WeekDays)
-                .HasConversion(v => JsonConvert.SerializeObject(v),
-                v => JsonConvert.DeserializeObject<ICollection<DayOfWeek>>(v));
-
-            modelBuilder.Entity<EventRepeatDetails>()
-                .Property(e => e.Exceptions)
-                .HasConversion(v => JsonConvert.SerializeObject(v),
-                v => JsonConvert.DeserializeObject<ICollection<EventRepeatDetails.RepeatException>>(v));
-                
         }
     }
 }
