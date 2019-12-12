@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using API.Data.Models;
 using API.V1.Contracts;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using static API.Data.Models.EventRepeatDetails;
 
 namespace API.V1.DTO.InputDTOs.EventDTOs
 {
@@ -13,17 +11,9 @@ namespace API.V1.DTO.InputDTOs.EventDTOs
         [FrequencyOption]
         public string NewFrequency { get; set; }
 
-        public ICollection<DayOfWeek> NewWeekDays { get; set; }
+        public List<WeekDay> NewWeekDays { get; set; }
 
         public DateTime? NewEndRepeat { get; set; }
-
-        public enum FrequencyOption
-        {
-            Daily,
-            Weekly,
-            Monthly,
-            Yearly
-        }
 
         public ICollection<RepeatException> NewRepeatExceptions { get; set; }
 

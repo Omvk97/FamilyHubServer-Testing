@@ -18,6 +18,8 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using API.V1.Repositories.IdentityRepo;
 using System;
+using Npgsql;
+using API.Data.Models;
 
 namespace API
 {
@@ -33,13 +35,15 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            Console.WriteLine("CONFIGURATION " + _configuration["DATABASE_CONNECTION_STRING"]);
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             }
             );
+
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<WeekDay>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<FrequencyOption>();
 
             services.AddDbContext<DataContext>(options => options.UseNpgsql(_configuration["DATABASE_CONNECTION_STRING"]));
 
@@ -89,7 +93,7 @@ namespace API
                     {
                         Name = "Oliver Marco van Komen",
                         Email = string.Empty,
-                        Url = new System.Uri("https://github.com/omvk97")
+                        Url = new Uri("https://github.com/omvk97")
                     }
                 });
             });
@@ -100,11 +104,8 @@ namespace API
         {
             if (env.IsDevelopment())
             {
+                Console.WriteLine("IF THIS IS RUN I AM IN DEVELOPMENT :O");
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
             }
 
             UpdateDatabase(app);

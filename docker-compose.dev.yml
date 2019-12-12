@@ -1,5 +1,8 @@
 ﻿version: '3.4'
 
+networks:
+    localdev:
+
 services:
     dev_database:
         image: postgres
@@ -10,6 +13,8 @@ services:
             POSTGRES_DB: dev-family-hub-server
         ports:
             - '5432:5432'
+        networks:
+            - localdev
     test_database:
         image: postgres
         restart: always
@@ -19,9 +24,10 @@ services:
             POSTGRES_DB: test-family-hub-server
         ports:
             - '5433:5432'
+        networks:
+            - localdev
     redis:
         image: redis
-        container_name: redis
         ports:
           - "6379:6379"
         networks:

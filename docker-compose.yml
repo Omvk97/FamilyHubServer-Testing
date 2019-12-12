@@ -1,6 +1,6 @@
 ﻿version: '3.4'
 
-# Disclaimer: This is not a production ready docker-compose, environment variables are pushed to Git
+# Disclaimer: This is not a production ready docker-compose, environment variables are pushed to Git and an nginx server should be used for Https
 
 networks:
     front:
@@ -18,14 +18,13 @@ services:
             - JWT__ISSUER=FamilyHub.dk
         ports:
             - "5000:80"
-            - "5001:443"
         depends_on:
             - database
             - redis
         networks:
             - front
             - back
-
+         
     database:
         image: postgres
         restart: always
@@ -35,9 +34,9 @@ services:
             POSTGRES_DB: family-hub-server
         networks:
             - back
+
     redis:
         image: redis
-        container_name: redis
         ports:
           - "6379:6379"
         networks:

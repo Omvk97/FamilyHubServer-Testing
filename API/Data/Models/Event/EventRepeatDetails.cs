@@ -17,23 +17,12 @@ namespace API.Data.Models
         public FrequencyOption Frequency { get; set; }
 
         [RequiredWhenFrequencyWeekday]
-        public ICollection<DayOfWeek> WeekDays { get; set; }
+        public List<WeekDay> WeekDays { get; set; }
 
         public DateTime? EndRepeat { get; set; }
 
+        [Column(TypeName = "jsonb")]
         public ICollection<RepeatException> Exceptions { get; set; }
-
-        public enum FrequencyOption
-        {
-            Daily, Weekly, Monthly, Yearly
-        }
-
-        public class RepeatException
-        {
-            public DateTime? ChangedStartTime { get; set; }
-            public DateTime? ChangedEndTime { get; set; }
-            public DateTime? Removed { get; set; }
-        }
 
         public class RequiredWhenFrequencyWeekdayAttribute : ValidationAttribute
         {

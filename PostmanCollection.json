@@ -1,0 +1,682 @@
+﻿{
+    "info": {
+        "_postman_id": "9a460aa7-9a48-4537-a94d-4bacd4f75526",
+        "name": "family-hub-server .NET",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "User",
+            "item": [
+                {
+                    "name": "Get All Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/users?includeFamily=true&includeEvents=true",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "includeFamily",
+                                    "value": "true"
+                                },
+                                {
+                                    "key": "includeEvents",
+                                    "value": "true"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User By Id",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "9c00e085-4e56-43d5-8d8c-e821ff03c5ac",
+                                "exec": [
+                                    ""
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/user",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "user"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"newEmail\": \"newExample4@example.com\",\n\t\"newName\": \"Oliver Marco van Komen\",\n\t\"newPassword\": \"Whaaaaaat123.?\",\n\t\"newProfileColor\": \"#ffffff\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/user",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "user"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/user",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "user"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User family",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/user/family",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "user",
+                                "family"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get User Events",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/user/events",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "user",
+                                "events"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        },
+        {
+            "name": "Family",
+            "item": [
+                {
+                    "name": "Create Family",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "f7eade8c-0777-4d94-9db4-fb5a6856f3a7",
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    pm.environment.set('familyId', pm.response.json().id)",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"name\": \"Van Komen FAM\",\n\t\"members\": [\n\t\t\"{{loggedInUserId}}\"\n\t]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/family",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "family"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Families",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/family",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "family"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Family By Id",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/family/{{familyId}}",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "family",
+                                "{{familyId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Family",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"newFamilyName\": \"van Komen FAM NEW\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/family/{{familyId}}",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "family",
+                                "{{familyId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Family",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/family/{{familyId}}",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "family",
+                                "{{familyId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        },
+        {
+            "name": "Event",
+            "item": [
+                {
+                    "name": "Create Event",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "09e11171-05d9-4265-ba0c-00a952627e19",
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    pm.environment.set('eventId', pm.response.json().id)",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"title\": \"WHAT\",\n\t\"description\": \"WHAT THE FUCK\",\n\t\"allDay\": \"2019-08-08\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/event",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "event"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Events",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/event",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "event"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Event By Id",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/event/{{eventId}}",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "event",
+                                "{{eventId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Event",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"newDescription\": \"What DESCRIPTION\",\n\t\"newStartTime\": \"2019-12-12\",\n\t\"newEndTime\": \"2019-12-12\",\n\t\"newRepeatDetails\": {\n\t\t\"newFrequency\": \"Weekly\"\n\t}\n\t\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/event/{{eventId}}",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "event",
+                                "{{eventId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Event",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/event/{{eventId}}",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "event",
+                                "{{eventId}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        },
+        {
+            "name": "Identity",
+            "item": [
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "32c39daf-19d6-4647-8313-39c0d1a71406",
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.environment.set('authToken', pm.response.json().token)",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Auth",
+                                "value": "",
+                                "type": "text",
+                                "disabled": true
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"email\": \"{{email}}\",\n\t\"password\": \"{{password}}\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/identity/login",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "identity",
+                                "login"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "id": "024cfe3a-ccc9-49d1-a93f-644b123d00e3",
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    pm.environment.set('loggedInUserId', pm.response.json().user.id)",
+                                    "    pm.environment.set('authToken', pm.response.json().token)",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "name": "Content-Type",
+                                "type": "text",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n\t\"name\": \"{{name}}\",\n\t\"email\": \"{{email}}\",\n\t\"password\": \"{{password}}\"\t\t\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{url}}/identity/register",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "identity",
+                                "register"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "protocolProfileBehavior": {}
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "id": "93a95274-4de7-46d8-98e4-7546b5da399f",
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "id": "13cd49a7-6ae7-4e1f-a07e-8a24d577772f",
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "protocolProfileBehavior": {}
+}
