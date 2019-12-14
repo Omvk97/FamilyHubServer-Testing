@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using API.Cache;
 
 namespace API.V1.Controllers
 {
@@ -52,6 +53,7 @@ namespace API.V1.Controllers
         }
 
         [HttpGet(ApiRoutes.EventRoutes.GetAllEvents)]
+        [Cached("event")]
         public async Task<ActionResult<ICollection<SuccessGetEventDTO>>> GetAllEvents(Guid? userId)
         {
             try
@@ -67,6 +69,7 @@ namespace API.V1.Controllers
         }
 
         [HttpGet(ApiRoutes.EventRoutes.GetEvent + "/{eventId}")]
+        [Cached("event")]
         // TODO: [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<SuccessGetEventDTO>> GetEvent(Guid eventId)
         {

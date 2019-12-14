@@ -148,7 +148,8 @@ namespace API.V1.Repositories.EventRepo
                 eventToUpdate.StartTime = (DateTime)userInput.NewStartTime;
                 eventToUpdate.AllDay = null;
             }
-            if (userInput.NewEndTime != null) {
+            if (userInput.NewEndTime != null)
+            {
                 eventToUpdate.EndTime = (DateTime)userInput.NewEndTime;
                 eventToUpdate.AllDay = null;
             }
