@@ -1,4 +1,4 @@
-﻿version: '3.4'
+﻿version: "3.4"
 
 # Disclaimer: This is not a production ready docker-compose, environment variables are pushed to Git and an nginx server should be used for Https
 
@@ -24,7 +24,7 @@ services:
         networks:
             - front
             - back
-         
+
     database:
         image: postgres
         restart: always
@@ -32,12 +32,15 @@ services:
             POSTGRES_USER: admin-user
             POSTGRES_PASSWORD: admin-password
             POSTGRES_DB: family-hub-server
+        ports:
+            - "1000:5432"
         networks:
             - back
 
     redis:
         image: redis
+        restart: always
         ports:
-          - "6379:6379"
+            - "6379:6379"
         networks:
-          - back
+            - back
